@@ -17,8 +17,7 @@ def download(num):
         response_chapter = requests.get(chapter_url)
         novel_content_url = parsel.Selector(response_chapter.text)
         chapter_name = novel_content_url.css('#main h1::text').get()  # 章节名
-        novel_content = novel_content_url.css(
-            '#content::text').getall()  # 小说内容
+        novel_content = novel_content_url.css('#content::text').getall()  # 小说内容
         content = '\n'.join(novel_content)  # 将获取的小说内容，不停的换行加入
         with open(f'{novel_name}.txt', mode='a', encoding='utf-8') as file:
             file.write(chapter_name)
@@ -43,6 +42,11 @@ def get_hot_list():  # sourcery skip: avoid-builtin-shadow
         '#mainright .titletop ul li a::text').getall()  # 书名列表
     hot_novel_link = hot_list.css(
         '#mainright .titletop ul li a::attr(href)').getall()  # 书本链接列表
+    for i in range(len(hot_novel_list)):
+        id_num = re.findall('book\/(.*?)\/', hot_novel_link[i])
+        list = '\t id: '+id_num[0] + '-----《' + \
+            hot_novel_name[i] + '》-----' + hot_novel_autho_list[i]
+        print(list)
     print('==================================================')
     print('''打开笔趣阁网站，找到您要下载的书本查看地址栏的编号也可以
 
@@ -51,11 +55,6 @@ def get_hot_list():  # sourcery skip: avoid-builtin-shadow
              那么133312就是他的id
              更多书籍打开  https://www.bbiquge.net/  搜索便可
     ''')
-    for i in range(len(hot_novel_list)):
-        id_num = re.findall('book\/(.*?)\/', hot_novel_link[i])
-        list = '\t id: '+id_num[0] + '-----《' + \
-            hot_novel_name[i] + '》-----' + hot_novel_autho_list[i]
-        print(list)
     return 0
 
 
